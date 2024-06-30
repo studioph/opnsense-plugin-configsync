@@ -59,6 +59,7 @@ class StorageProviderBoto3Compatible:
     path = None
     key_id = None
     key_secret = None
+    extension = ".xml.gz" if __configsync_gzip_content__ else ".xml"
 
     def __init__(self, **kwargs):
 
@@ -84,7 +85,7 @@ class StorageProviderBoto3Compatible:
         config_files = [
             {
                 "source_filepath": __system_config_current_file__,
-                "target_filename": "config-test.xml",
+                "target_filename": f"config-test{self.extension}",
                 "content_type": "application/xml",
             }
         ]
@@ -104,7 +105,7 @@ class StorageProviderBoto3Compatible:
         config_files = [
             {
                 "source_filepath": __system_config_current_file__,
-                "target_filename": "config-current.xml",
+                "target_filename": f"config-current{self.extension}",
                 "content_type": "application/xml",
             }
         ]
@@ -131,7 +132,9 @@ class StorageProviderBoto3Compatible:
         ]
 
         for backup_filename in os.listdir(__system_config_backups_path__):
-            if backup_filename.startswith("config") and backup_filename.endswith(".xml"):
+            if backup_filename.startswith("config") and backup_filename.endswith(
+                self.extension
+            ):
                 config_files.append(
                     {
                         "source_filepath": os.path.join(__system_config_backups_path__, backup_filename),
